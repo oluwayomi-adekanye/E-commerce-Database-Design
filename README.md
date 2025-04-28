@@ -1,4 +1,5 @@
 # E-commerce-Database-Design
+https://dbdocs.io/kanyeunited/ecommerce_db
 📦 Peer Group Assignment: E-commerce Database Design
 🎯 Objective
 This challenge will help you master the art of database design🧠💾
