@@ -1,0 +1,164 @@
+Table brands {
+  id uuid [primary key]
+  name varchar(50) [unique]
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table products {
+  id uuid [primary key]
+  name varchar(50) [unique]
+  description text [null]
+  brand_id uuid [ref: > brands.id]
+  base_price decimal(5,2) [default: 0, null]
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table product_images {
+  id uuid [primary key]
+  product_id uuid [ref: > products.id]
+  file_path varchar(50)
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table categories {
+  id uuid [primary key]
+  name varchar(50) [unique]
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table product_categories {
+  id uuid [primary key]
+  product_id uuid
+  category_id uuid
+  indexes {
+    (product_id, category_id) [unique]
+  }
+}
+
+Ref: products.id < product_categories.product_id
+Ref: categories.id < product_categories.category_id
+
+Table product_items {
+  id uuid [primary key]
+  product_id uuid
+  product_category_id uuid
+  created_at timestamp
+  updated_at timestamp
+  indexes {
+    (product_id, product_category_id) [unique]
+  }
+}
+
+Ref: products.id < product_items.product_id
+Ref: product_categories.id < product_items.product_category_id
+
+Table size_categories {
+  id uuid [primary key]
+  category varchar(50) [unique]
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table size_options {
+  id uuid [primary key]
+  size_category_id uuid
+  option varchar(50)
+  created_at timestamp
+  updated_at timestamp
+  indexes {
+    (size_category_id, option) [unique]
+  }
+}
+
+Ref: size_categories.id < size_options.size_category_id
+
+Table colors {
+  id uuid [primary key]
+  color varchar(50) [unique]
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table product_variations {
+  id uuid [primary key]
+  product_id uuid
+  product_category_id uuid
+  product_item_id uuid
+  size_category_id uuid
+  size_option_id uuid
+  color_id uuid
+  file_path varchar(50)
+  created_at timestamp
+  updated_at timestamp
+  indexes {
+    (product_item_id, size_option_id, color_id) [unique]
+  }
+}
+
+Ref: products.id < product_variations.product_id
+Ref: product_categories.id < product_variations.product_category_id
+Ref: product_items.id < product_variations.product_item_id
+Ref: size_categories.id < product_variations.size_category_id
+Ref: size_options.id < product_variations.size_option_id
+Ref: colors.id < product_variations.color_id
+
+Table attribute_categories {
+  id uuid [primary key]
+  attribute_category varchar(50) [unique]
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table attribute_types {
+  id uuid [primary key]
+  attribute_category_id uuid [ref: > attribute_categories.id]
+  attribute_type varchar(50)
+  created_at timestamp
+  updated_at timestamp
+  indexes {
+    (attribute_category_id, attribute_type) [unique]
+  }
+}
+
+Table attributes {
+  id uuid [primary key]
+  attribute_category_id uuid
+  attribute_type_id uuid
+  attribute varchar(50)
+  created_at timestamp
+  updated_at timestamp
+  indexes {
+    (attribute_category_id, attribute_type_id) [unique]
+  }
+}
+
+Ref: attribute_categories.id < attributes.attribute_category_id
+Ref: attribute_types.id < attributes.attribute_type_id
+
+Table product_attributes {
+  id uuid [primary key]
+  product_id uuid
+  product_category_id uuid
+  product_item_id uuid
+  product_variation_id uuid
+  attribute_category_id uuid
+  attribute_type_id uuid
+  attribute_id uuid
+  created_at timestamp
+  updated_at timestamp
+  indexes {
+    (product_variation_id, attribute_id) [unique]
+  }
+}
+
+Ref: products.id < product_attributes.product_id
+Ref: product_categories.id < product_attributes.product_category_id
+Ref: product_items.id < product_attributes.product_item_id
+Ref: product_variations.id < product_attributes.product_variation_id
+Ref: attribute_categories.id < product_attributes.attribute_category_id
+Ref: attribute_types.id < product_attributes.attribute_type_id
+Ref: attributes.id < product_attributes.attribute_id
